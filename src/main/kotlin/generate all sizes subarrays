@@ -1,0 +1,88 @@
+/**
+* APPROACH
+	1,2,3,4,5
+
+	1/2/3/4/5 => 1 + 1 + 1 + 1 + 1
+
+	1,2/2,3/3,4/4,5 => 2 + 2 + 2 + 2
+	
+	1,2,3/2,3,4/3,4,5 => 3 + 3 + 3
+
+	1,2,3,4/2,3,4,5 => 4 + 4
+
+	1,2,3,4,5 => 5
+
+	n + (n-1) + (n-2) + (n-3) + …….. + (n - n +1) => n + ………..+1 -> n(n-1)/2
+	subarrays => n * n
+	O(N) + O(n2-1) + O(n2-2) + … O(n2 - n2 + 2) + O(n2 - n2 +1)
+	O(n2 * n)
+
+ITERATIVE SOLUTION
+for each length from 0 to array.size calculate the subarrays.
+	
+		
+
+
+
+* PSEUDO CODE
+	ITERATIVE SOLUTION
+	for (len in 1 .. arr.length)
+		for (i in 0 until arr.length - len + 1)
+			for (j in i until i + len)
+				print(arr[j])
+			println()
+
+	
+	RECURSIVE SOLUTION
+		main() {
+			for (i in 0 until arr.size) {
+				recursion(i, arr, path, solution)
+			}
+}
+
+recursion(index, arr, path, solution) {
+	if (index == arr.size) return
+	solution.add(path + arr[index])
+	recursion(index + 1, arr, path + arr[index], solution)
+}
+
+
+* COMPLEXITY
+ITERATIVE
+	time -> O(n3)
+	space -> O(n3)
+	
+	RECURSIVE
+		time -> O(n3)
+		space -> O(n3) + O(n)
+
+
+* LAST REVISION DATE
+
+
+
+
+*/
+
+
+CODE
+
+fun main() {
+	val arr = intArrayOf(1,2,3,4,5)
+val solution = mutableListOf<List<Int>>()
+	for (i in 0 until arr.size) {
+		recursion(i, arr, mutableListOf<Int>(), solution)
+	}
+	println(solution)
+}
+
+
+fun recursion(index: Int, arr: IntArray, path: List<Int>, solution: MutableList<List<Int>>) {
+if (index == arr.size) return
+solution.add(path + arr[index])
+recursion(index + 1, arr, path `+` arr[index], solution)
+}
+
+infix fun List<Int>.`+`(value: Int): List<Int> {
+	return this.toMutableList().apply{ add(value) }
+}

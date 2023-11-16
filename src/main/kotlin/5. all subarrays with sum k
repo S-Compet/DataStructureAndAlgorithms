@@ -1,0 +1,125 @@
+1,2,3,4,5,6
+0,1,2,3,4,5
+sublist(4,6)
+/**
+* APPROACH
+	
+	{10,	2,	-2,	-20,	10} k = 10
+	10	12	10	-10	0
+
+
+
+	{10,	2,	-2,	-20,	10, 	10} k = 10
+	10	12	10	-10	0	10
+0,5
+5,5
+
+
+	[15,	2, 	4, 	8, 	9, 	5, 	10, 	23] k = 23
+	15   	17	21	29	38	43	53	76	 	
+
+
+
+
+* PSEUDO CODE
+	STORING SUM in Map
+
+main() {
+	map: Map<Sum,List<Index>>
+	solutions: List<Pair<Start,End>>
+
+	map[0] = [-1]
+	sum = 0
+	for (index in 0 until array.size) {
+		sum += array[index]
+		if (map.exists(sum - k)) {
+			val indices = map[sum - k]
+for (i in indices) {
+	solutions.add(Pair(i + 1, index + 1))
+} 
+		}
+
+		map[sum] = map[sum] || []
+		map[sum].add(index)
+}
+
+print(solutions)
+}
+
+	
+	SLIDING WINDOW
+		{10,	2,	-2,	-20,	10, 	10} k = 10
+		[15,	2, 	4, 	8, 	9, 	5, 	2, 10, 2, 23] k = 23
+		main() {
+			solutions: List<Pair<Start,End>>
+			var i = 0
+			var j = 0
+			sum = arr[i]
+
+while (j < arr.size) {
+while (i < j && sum > k) {
+	sum -= arr[i]
+	i++
+}
+
+while(j < arr.size && sum < k) {
+	sum += arr[j]
+	j++
+}
+
+if (sum == k) {
+	solutions.add(Pair(i, j+1))
+
+	sum += arr[j]
+	j++
+}
+
+			}
+	
+}
+
+
+
+* COMPLEXITY
+	Time -> 	O(n^2)
+	Space ->	map + solutions
+			O(n + n) + O(n + n)
+			O(n)
+
+
+
+
+* LAST REVISION DATE
+
+
+
+
+*/
+
+
+//CODE
+fun main() {
+val arr = intArrayOf(10,	2,-2,-20,10,10)
+solution(arr, 10)	
+}
+
+fun solution(arr: IntArray, k: Int) {
+	val map = mutableMapOf<Int, MutableList<Int>>()
+	val solutions = mutableListOf<Pair<Int, Int>>()
+
+	map[0] = mutableListOf(-1)
+	var sum = 0
+	for (index in 0 until arr.size) {
+		sum += arr[index]
+		
+		if (map.containsKey(sum - k)) {
+			val indicies = map[sum - k]!!
+			for (i in indicies) {
+				soltuions.add(Pair(i + 1, index + 1))
+			}
+		}
+		map[sum] = map.getOrDefault(sum, mutableListOf())!!.apply { add(index) }
+	}
+
+	println(solutions)
+}

@@ -85,8 +85,8 @@ if (sum == k) {
 * COMPLEXITY
 	Time -> 	O(n^2)
 	Space ->	map + solutions
-			O(n + n) + O(n + n)
-			O(n)
+			O(n + n) + O(n^2)
+			O(n^2)
 
 
 

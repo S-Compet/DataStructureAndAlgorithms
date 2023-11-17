@@ -1,0 +1,99 @@
+/**
+* LINK: 
+	https://leetcode.com/problems/subarray-sums-divisible-by-k/description/
+
+
+* APPROACH
+	[4,5,0,-2,-3,1] k = 5  output -> 7
+
+	map => { 
+		0 -> [-1]
+4 -> [0, 1, 2, 4]
+2 -> [3]
+
+	
+}
+
+solution => [
+	(1,2), (1,3) (2,3)
+	(1,5), (2,5), (3,5)
+	(0,6)
+]
+
+
+
+* PSEUDO CODE
+	map: Map<Int, List<Int>>
+	solution: List<Pair<Int, Int>>
+
+	map[0] = [-1]
+	sum = 0
+	for (index in 0 until arr.size) {
+		sum += arr[index]
+		if (map.contains(sum % k) {
+			indices = map[sum % k]
+			
+			for (i in indices) {
+				solutions.add(Pair(i + 1, index + 1)
+			}
+		}
+
+		map[sum % k] = map[sum % k] || []
+		map[sum % k].add(index)
+	}
+
+
+
+
+
+
+
+* COMPLEXITY
+	Time -> O(n)
+	Space -> Map + Solutions
+		  O(n+n) + O(n^2)
+		  O(n^2)
+
+
+
+
+* LAST REVISION DATE
+
+
+
+
+*/
+
+
+//CODE
+	fun main() {
+		val arr = intArrayOf(4,5,0,-2,-3,1)
+		val k = 5
+		solution(arr, k)
+	}
+
+	fun solution(arr: IntArray, k: Int) {
+		val map = mutableMapOf<Int, MutableList<Int>>()
+		val solutions = mutableListOf<Pair<Int, Int>>()
+	
+		map[0] = mutableListOf(-1)
+		var sum = 0
+		for (index in 0 until arr.size) {
+			sum += arr[index]
+			
+			val mod = sum % k
+			if (mod < 0) mod += k
+			if (map.containsKey(mod)) {
+				val indices = map[mod]!!
+				for (i in indices) {
+					solutions.add(Pair(i + 1, index + 1))
+				}
+			}
+
+			map[mod] = map.getOrDefault(mod, mutableListOf<Int>())!!.apply { add(index) }
+		}
+
+		println(solutions)
+	}
+
+

@@ -49,7 +49,7 @@ print(solutions)
 }
 
 	
-	SLIDING WINDOW
+	SLIDING WINDOW (works only for positive numbers)
 		{10,	2,	-2,	-20,	10, 	10} k = 10
 		[15,	2, 	4, 	8, 	9, 	5, 	2, 10, 2, 23] k = 23
 		main() {

@@ -1,0 +1,80 @@
+class Solution {
+    fun networkDelayTime(times: Array<IntArray>, n: Int, k: Int): Int {
+        val matrix = prepareMatrix(n, times)
+        
+        val visited = BooleanArray(n + 1) { false }
+
+        val weights = IntArray(n + 1) { Int.MAX_VALUE }
+        weights[k] = 0
+
+        while (visited.isVisited() == false) {
+            val node = findMin(visited, weights)
+            visited[node] = true
+
+            for (j in 1 .. n) {
+                if (matrix[node][j] != -1 && visited[j] == false) {
+                    weights[j] = Math.min(weights[j], weights[node] + matrix[node][j])
+                }
+            }
+        }
+
+        if (weights.isVisited()) {
+            return weights.maxi()
+        } else {
+            return -1
+        }
+    }
+
+    fun prepareMatrix(n: Int, times: Array<IntArray>): Array<IntArray> {
+        val returnValue = Array(n + 1) { IntArray(n + 1) { -1 }}
+        for (item in times) {
+            val s = item[0]
+            val d = item[1]
+            val w = item[2]
+
+            returnValue[s][d] = w
+        }
+
+        return returnValue
+    }
+
+    fun findMin(visited: BooleanArray, weights: IntArray): Int {
+        var returnValue: Int? = null
+        for (index in 1 until visited.size) {
+            if (visited[index] == false) {
+                if (returnValue == null) {
+                    returnValue = index
+                } else if (weights[returnValue!!] > weights[index]){
+                    returnValue = index
+                }
+            }
+        }
+
+        return returnValue!!
+    }
+
+    fun IntArray.isVisited(): Boolean {
+        for (index in 1 until this.size) {
+            val item = this[index]
+            if (item == Int.MAX_VALUE) return false
+        }
+        return true
+    }
+
+    fun BooleanArray.isVisited(): Boolean {
+        for (index in 1 until this.size) {
+            val item = this[index]
+            if (item == false) return false
+        }
+        return true
+    }
+
+    fun IntArray.maxi(): Int {
+        var max = -1
+        for (index in 1 until this.size) {
+            val item = this[index]
+            max = Math.max(max, item)
+        }
+        return max
+    }
+}

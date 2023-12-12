@@ -1,0 +1,64 @@
+class Solution {
+    var count = 0
+    fun findMinHeightTrees(n: Int, edges: Array<IntArray>): List<Int> {
+        if (n == 1) return listOf(0)
+
+        val map = prepareMap(n, edges)
+        var leaves = getLeaves(map)
+
+        if (n == 2) return leaves
+
+        var nodeCount = n
+        while (nodeCount > 2) {
+            nodeCount -= leaves.size
+            val newLeaves = mutableListOf<Int>()
+
+            for (leaf in leaves) {
+                val i = map[leaf]!!.first()
+                val j = leaf
+                
+                map[j]!!.remove(i)
+                map[i]!!.remove(j)
+
+                if (map[i]!!.size == 1) {
+                    newLeaves.add(i)
+                }
+            }
+            
+            leaves = newLeaves
+        }
+        
+        return leaves
+    }
+
+    fun prepareMap(n: Int, edges: Array<IntArray>): MutableMap<Int, MutableSet<Int>> {
+        val map = mutableMapOf<Int, MutableSet<Int>>()
+        for (index in 0 until n) map.put(index, mutableSetOf<Int>())
+        for (edge in edges) {
+            map[edge[0]]!!.add(edge[1])
+            map[edge[1]]!!.add(edge[0])
+        }
+
+        return map
+    }
+
+    fun getLeaves(map: MutableMap<Int, MutableSet<Int>>): List<Int> {
+        val returnValue = mutableListOf<Int>()
+
+        for ((key, value) in map) {
+            if (value.size == 1) returnValue.add(key)
+        }
+
+        return returnValue
+    }
+
+    fun Array<IntArray>.print() {
+        for (i in 0 until this.size) {
+            for (j in 0 until this[i].size) {
+                print("${this[i][j]} ")
+            }
+            println()
+        }
+        println()
+    }
+}

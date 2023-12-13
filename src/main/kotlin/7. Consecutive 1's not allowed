@@ -1,0 +1,16 @@
+/// https://www.geeksforgeeks.org/problems/consecutive-1s-not-allowed1912/1
+
+class Solution {
+    
+    long countStrings(int n) {
+        long mod = 1000000007;
+        long one = 1;
+        long zero = 1;
+        for (int i = 2; i <= n; i++) {
+            long temp = zero;
+            zero = (one + zero) % mod;
+            one = temp;
+        }
+        return (one + zero) % mod;
+    }
+}

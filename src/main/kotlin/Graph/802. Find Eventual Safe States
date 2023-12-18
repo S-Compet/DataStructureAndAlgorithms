@@ -1,0 +1,49 @@
+// https://leetcode.com/problems/find-eventual-safe-states/solutions/
+
+class Solution {
+    fun eventualSafeNodes(graph: Array<IntArray>): List<Int> {
+        val nodesState = nodesState(graph)
+        for (node in 0 until graph.size) {
+            recursion(node, nodesState, graph)
+        }
+
+        val returnValue = mutableListOf<Int>()
+        for (index in 0 until nodesState.size) {
+            if (nodesState[index] == 1) {
+                returnValue.add(index)
+            }
+        }
+        return returnValue
+    }
+
+    fun recursion(src: Int, nodesState: IntArray, graph: Array<IntArray>): Boolean {
+        if (nodesState[src] != -1) {
+            if (nodesState[src] == 0) return false
+            if (nodesState[src] == 1) return true
+        }
+
+        nodesState[src] = 0
+        for (node in graph[src]) {
+            if (recursion(node, nodesState, graph) == false) return false
+        }
+        nodesState[src] = 1
+        
+        return true
+    }
+
+    fun nodesState(graph: Array<IntArray>): IntArray {
+        val returnValue = IntArray(graph.size) { -1 }
+        for (index in 0 until graph.size) {
+            val row = graph[index]
+            if (row.isEmpty()) {
+                returnValue[index] = 1
+            }
+        }
+
+        return returnValue
+    }
+
+    operator fun BooleanArray.plus(node: Int): BooleanArray {
+        return this.toMutableList().apply { this[node] = true }.toBooleanArray()
+    }
+}

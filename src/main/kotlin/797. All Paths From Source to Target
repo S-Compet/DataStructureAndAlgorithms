@@ -1,0 +1,29 @@
+/// https://leetcode.com/problems/all-paths-from-source-to-target/description/
+
+class Solution {
+    fun allPathsSourceTarget(graph: Array<IntArray>): List<List<Int>> {
+        val paths = mutableListOf<List<Int>>()
+        recursion(0, graph, mutableListOf<Int>(), paths)
+
+        return paths
+    }
+
+    fun recursion(src: Int, graph: Array<IntArray>, path: List<Int>, paths: MutableList<List<Int>>) {
+        if (src == graph.size - 1) {
+            paths.add(path + src)
+            return
+        }
+
+        for (node in graph[src]) {
+            recursion(node, graph, path + src, paths)
+        }
+    }
+
+    operator fun BooleanArray.plus(node: Int): BooleanArray {
+        return this.toMutableList().apply { this[node] = true }.toBooleanArray()
+    }
+
+    operator fun List<Int>.plus(node: Int): List<Int> {
+        return this.toMutableList().apply { add(node) }
+    }
+}

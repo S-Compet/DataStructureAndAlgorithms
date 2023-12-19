@@ -1,0 +1,22 @@
+// https://leetcode.com/problems/keys-and-rooms/description/
+
+class Solution {
+    fun canVisitAllRooms(rooms: List<List<Int>>): Boolean {
+        val unVisited = mutableSetOf<Int>()
+        for (index in 0 until rooms.size) {
+            unVisited.add(index)
+        }
+        recursion(rooms, 0, unVisited)
+
+        return unVisited.isEmpty()
+    }
+
+    fun recursion(rooms: List<List<Int>>, src: Int, unVisited: MutableSet<Int>) {
+        if (unVisited.contains(src) == false) return
+
+        unVisited.remove(src)
+        for (dest in rooms[src]) {
+            recursion(rooms, dest, unVisited)
+        }
+    }
+}

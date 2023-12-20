@@ -1,0 +1,46 @@
+// https://leetcode.com/problems/loud-and-rich/submissions/1123928590/
+
+class Solution {
+    fun loudAndRich(richer: Array<IntArray>, quiet: IntArray): IntArray {
+        val map = prepareMap(richer, quiet)
+// print(map)
+        val returnValue = IntArray(quiet.size) { Int.MAX_VALUE }
+        for (index in 0 until returnValue.size) {
+            var quietValue = Int.MAX_VALUE
+            var quietIndex = -1
+            for (richerIndex in map[index]!!) {
+                if (quietValue > quiet[richerIndex]) {
+                    quietValue = quiet[richerIndex]
+                    quietIndex = richerIndex
+                }
+            }
+            returnValue[index] = quietIndex
+        }
+
+        return returnValue
+    }
+
+    fun prepareMap(richer: Array<IntArray>, quiet: IntArray): Map<Int, MutableSet<Int>> {
+        val map = mutableMapOf<Int, MutableSet<Int>>()
+        for (index in 0 until quiet.size) {
+            map.put(index, mutableSetOf(index))
+        }
+
+        for (rich in richer) {
+            val a = rich[0]
+            val b = rich[1]
+
+            for ((node, richerNodes) in map) {
+                if (richerNodes.contains(b)) {
+                    richerNodes.add(a)
+                }
+                if (node == a) {
+                    map[b]!!.addAll(map[node]!!)
+                }
+            }
+        }
+
+        return map
+    }
+
+}

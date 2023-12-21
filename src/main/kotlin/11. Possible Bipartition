@@ -1,0 +1,118 @@
+// https://leetcode.com/problems/possible-bipartition/
+
+class Solution {
+    fun possibleBipartition(n: Int, dislikes: Array<IntArray>): Boolean {
+        val hatesMap = hatesMap(n, dislikes)
+        val hatedByMap = hatedByMap(n, dislikes)
+
+        val groupA = mutableSetOf<Int>()
+        val groupB = mutableSetOf<Int>()
+        for (index in 1 .. n) {
+            if (groupA.contains(index) || groupB.contains(index)) continue
+
+            val queue = LinkedList<Int>()
+            queue.push(index)
+            while(queue.isNotEmpty()) {
+                val element = queue.pop()
+                val hateArray = hatesMap[element]!! + hatedByMap[element]!!
+
+                if (groupA.contains(element)) {
+                    for (ele in hateArray) {
+                        if (groupA.contains(ele)) return false
+
+                        if (groupB.contains(ele) == false) {
+                            groupB.add(ele)
+                            queue.add(ele)
+                        }
+                    }
+                }  else if (groupB.contains(element)) {
+                    for (ele in hateArray) {
+                        if (groupB.contains(ele)) return false
+                        
+                        if (groupA.contains(ele) == false) {
+                            groupA.add(ele)
+                            queue.add(ele)
+                        }
+                    }
+                } else {
+                    groupA.add(element)
+                    for (ele in hateArray) {
+                        if (groupA.contains(ele)) return false
+
+                        if (groupB.contains(ele) == false) {
+                            groupB.add(ele)
+                            queue.add(ele)
+                        }
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    private fun hatesMap(n: Int, dislikes: Array<IntArray>): Map<Int, MutableSet<Int>> {
+        val returnValue = mutableMapOf<Int, MutableSet<Int>>()
+        for (index in 1 .. n) {
+            returnValue[index] = mutableSetOf<Int>()
+        }
+
+        for (item in dislikes) {
+            val a = item[0]
+            val b = item[1]
+            returnValue[a]!!.add(b)
+        }
+
+        return returnValue
+    }
+
+    private fun hatedByMap(n: Int, dislikes: Array<IntArray>): Map<Int, MutableSet<Int>> {
+        val returnValue = mutableMapOf<Int, MutableSet<Int>>()
+        for (index in 1 .. n) {
+            returnValue[index] = mutableSetOf<Int>()
+        }
+
+        for (item in dislikes) {
+            val a = item[0]
+            val b = item[1]
+            returnValue[b]!!.add(a)
+        }
+
+        return returnValue
+    }
+
+    private operator fun Set<Int>.plus(value: Set<Int>): Set<Int> {
+        return this.toMutableSet().apply { addAll(value) }
+    }
+}
+/*
+n = 6
+1,2
+1,5
+3,4
+4,5
+5,6
+7,8
+7,9
+9,10
+
+hates
+1 -> 2, 5
+2 -> 
+3 -> 4
+4 -> 5
+5 -> 6
+6 -> 
+
+hated-by
+1 <-
+2 <- 1
+3 <-
+4 <- 3
+5 <- 1, 4
+6 <- 5
+
+
+groupA -> 1,6
+groupB -> 2,5
+
+ */

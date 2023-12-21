@@ -1,0 +1,98 @@
+// https://leetcode.com/problems/flower-planting-with-no-adjacent/
+
+class Solution {
+    fun gardenNoAdj(n: Int, paths: Array<IntArray>): IntArray {
+        val map = prepareMap(paths)
+        val colors = MutableList<Int>(n + 1) { -1 }
+
+        for (index in 1 .. n) {
+            if (colors[index] == -1) {
+                val queue = LinkedList<Int>()
+                queue.add(index)
+
+                while(queue.isNotEmpty()) {
+                    val item = queue.pop()
+                    
+                    colors[item] = assignColor(colors, map.getOrDefault(item, mutableListOf<Int>()))
+
+                    queue.addAll(unVisitedItems(colors, map.getOrDefault(item, mutableListOf<Int>())))
+                }
+            }
+        }
+
+        return colors.subList(1, colors.size).toIntArray()
+    }
+
+    fun prepareMap(paths: Array<IntArray>): Map<Int, MutableList<Int>> {
+        val returnValue = mutableMapOf<Int, MutableList<Int>>()
+        for (path in paths) {
+            returnValue[path[0]] = returnValue.getOrDefault(path[0], mutableListOf()).apply{ add(path[1]) }
+            returnValue[path[1]] = returnValue.getOrDefault(path[1], mutableListOf()).apply{ add(path[0]) }
+        }
+        return returnValue
+    }
+
+    fun assignColor(colors: List<Int>, connectedItems: List<Int>): Int {
+        val colorSet = mutableSetOf<Int>(1,2,3,4)
+        for (item in connectedItems) {
+            if (colors[item] != -1) {
+                colorSet.remove(colors[item])
+            }
+        }
+        return colorSet.first()
+    }
+
+    fun unVisitedItems(colors: List<Int>, connectedItems: List<Int>): List<Int> {
+        val returnValue = mutableListOf<Int>()
+        for (item in connectedItems) {
+            if (colors[item] == -1) {
+                returnValue.add(item)
+            }
+        }
+        return returnValue
+    }
+}
+
+/*
+
+main() {
+    map = prepareMap()
+    color = IntArray(n + 1) { -1 }
+    quque
+    
+    for (i in 1 .. n) {
+        if (colors[i] == -1) {
+            queue.add(i)
+            while(queue.isNotEmpty()) {
+                item = queue.pop()
+                
+                color[item] = assignColor(color, map[item])
+
+                quque.addAll(unVisitedItems(color, map[item]))
+            }
+        }
+    }
+
+    return color(1, n)
+}
+assignColor(color, connectedItems): Int {
+    val colors = setof(1,2,3,4)
+    for (item in connectedItems) {
+        if (color[item] != -1) {
+            colors.remove(color[item])
+        }
+    }
+    return colors[0]
+}
+
+unVisitedItems(color, connectedItems): Int {
+    val returnValue = []
+    for (item in connectedItems) {
+        if (color[item] == -1) {
+            returnValue.add(item)
+        }
+    }
+    return returnValue
+}
+
+ */

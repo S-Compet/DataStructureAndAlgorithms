@@ -1,0 +1,64 @@
+// https://leetcode.com/problems/get-watched-videos-by-your-friends/
+
+class Solution {
+    fun watchedVideosByFriends(watchedVideos: List<List<String>>, friends: Array<IntArray>, id: Int, level: Int): List<String> {
+        val map = mutableMapOf<String, Int>()
+        
+        val isPushedIntoQueue = BooleanArray(friends.size) { false }
+
+        val queue = LinkedList<Item>()
+        queue.add(Item(id, 0))
+        isPushedIntoQueue[id] = true
+        
+        while(queue.isNotEmpty()) {
+            val item = queue.pop()
+// println("${item.id} ${item.level}")
+            if (item.level == level) {
+                for (videoId in watchedVideos[item.id]) {
+                    map[videoId] = map.getOrDefault(videoId, 0) + 1
+                }
+            } else {
+                for (friendId in friends[item.id]) {
+                    if (isPushedIntoQueue[friendId] == false) {
+                        isPushedIntoQueue[friendId] = true
+                        queue.add(Item(friendId, item.level + 1))
+                    }
+                }
+            }
+        }
+
+        return map.toList().sortedWith { a, b -> 
+            if (a.second < b.second) {
+                -1
+            } else if (a.second > b.second) {
+                1
+            } else {
+                a.first.compareTo(b.first)
+            }
+        }.map { it.first }
+    }
+
+    data class Item(val id: Int, val level: Int)
+}
+
+/*
+    main() {
+        watchedVideos
+        friends
+
+        freqMap = {videoId, freq}
+        queue.add({id, 0})
+        while(queue.isNotEmpty()) {
+            item = quque.pop()
+
+            if (item.level == k) {
+                pushVideos into freqMap
+            } else {
+                push item's friends to queue
+            }
+        }
+        sort freqMap
+        and return
+    }
+
+ */

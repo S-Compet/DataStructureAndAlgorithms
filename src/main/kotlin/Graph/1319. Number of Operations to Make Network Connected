@@ -1,0 +1,44 @@
+// https://leetcode.com/problems/number-of-operations-to-make-network-connected/description/
+
+class Solution {
+    fun makeConnected(n: Int, connections: Array<IntArray>): Int {
+        if (connections.size < n - 1) return -1
+
+        val map = prepareMap(connections)
+        
+        var counter = 0
+        val isItemProcessed = BooleanArray(n) { false }
+        for (index in 0 until n) {
+            if (isItemProcessed[index] == false) {
+                
+                val queue = LinkedList<Int>()
+                queue.add(index)
+
+                isItemProcessed[index] = true
+
+                while(queue.isNotEmpty()) {
+                    val item = queue.pop()
+                    
+                    for (connectedItem in map.getOrDefault(item, mutableListOf<Int>())) {
+                        if (isItemProcessed[connectedItem] == false) {
+                            queue.add(connectedItem)
+                            isItemProcessed[connectedItem] = true
+                        }
+                    }
+                }
+                counter++
+            }
+        }
+
+        return counter - 1
+    }
+
+    fun prepareMap(paths: Array<IntArray>): Map<Int, MutableList<Int>> {
+        val returnValue = mutableMapOf<Int, MutableList<Int>>()
+        for (path in paths) {
+            returnValue[path[0]] = returnValue.getOrDefault(path[0], mutableListOf()).apply{ add(path[1]) }
+            returnValue[path[1]] = returnValue.getOrDefault(path[1], mutableListOf()).apply{ add(path[0]) }
+        }
+        return returnValue
+    }
+}

@@ -1,0 +1,48 @@
+// https://leetcode.com/problems/frog-position-after-t-seconds/description/
+
+class Solution {
+    fun frogPosition(n: Int, edges: Array<IntArray>, t: Int, target: Int): Double {
+        val map = prepareMap(edges)
+
+        val visited = BooleanArray(n + 1) { false }
+
+        val source = Item(1, 1, 0)
+        val queue = LinkedList<Item>()
+        queue.add(source)
+        visited[source.node] = true
+
+        while(queue.isNotEmpty()) {
+            val item = queue.pop()
+// println("node: ${item.node} prob: ${item.prob} timeTaken: ${item.timeTaken}")
+            
+            if (item.node == target) {
+                val isLeaf = map.getOrDefault(item.node, mutableListOf<Int>()).filter { visited[it] == false }.isEmpty()
+                val isNoTimeLeft = item.timeTaken == t
+                if (isLeaf || isNoTimeLeft) {
+                    return 1.0 / item.prob
+                }
+            }
+            
+            if (item.timeTaken < t) {
+                val children = map.getOrDefault(item.node, mutableListOf<Int>()).filter { visited[it] == false }
+                for (connectedNode in children) {
+                    queue.add(Item(connectedNode, item.prob * children.size, item.timeTaken + 1))
+                    visited[connectedNode] = true
+                }
+            }
+        }
+
+        return 0.0
+    }
+
+    fun prepareMap(paths: Array<IntArray>): Map<Int, MutableList<Int>> {
+        val returnValue = mutableMapOf<Int, MutableList<Int>>()
+        for (path in paths) {
+            returnValue[path[0]] = returnValue.getOrDefault(path[0], mutableListOf()).apply{ add(path[1]) }
+            returnValue[path[1]] = returnValue.getOrDefault(path[1], mutableListOf()).apply{ add(path[0]) }
+        }
+        return returnValue
+    }
+
+    data class Item(val node: Int, val prob: Long, val timeTaken: Int)
+}

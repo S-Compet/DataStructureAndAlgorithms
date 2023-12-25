@@ -1,0 +1,60 @@
+// https://leetcode.com/problems/the-time-when-the-network-becomes-idle/description/
+
+class Solution {
+    fun networkBecomesIdle(edges: Array<IntArray>, patience: IntArray): Int {
+        val map = prepareMap(edges)
+        val isNodeProcessed = BooleanArray(patience.size) { false }
+        
+        val weights = Array<Item>(patience.size) { Item(0, Int.MAX_VALUE) }
+        for (index in 0 until weights.size) {
+            weights[index] = Item(index, Int.MAX_VALUE)
+        }
+        weights[0].weight = 0
+
+        val pq = PriorityQueue<Item>(Comparator() { a, b ->
+            if (a.weight < b.weight) {
+                -1
+            } else if (a.weight > b.weight) {
+                1
+            } else {
+                0
+            }
+        })
+
+        pq.add(weights[0])
+        isNodeProcessed[0] = true
+
+        while(pq.isNotEmpty()) {
+            val item = pq.poll()
+
+            for (connectedNode in map[item.node]!!) {
+                if (isNodeProcessed[connectedNode] == false) {
+                    pq.add(weights[connectedNode])
+                    isNodeProcessed[connectedNode] = true
+                }
+
+                weights[connectedNode].weight = Math.min(weights[connectedNode].weight, item.weight + 1)
+            }
+        }
+
+        var totalTimeTaken = 0
+        for (index in 1 .. patience.size - 1) {
+            val rt = 2 * weights[index].weight
+            val timeTaken = rt + (Math.ceil(rt * 1.0 / patience[index]) - 1).toInt() * patience[index]
+            totalTimeTaken = Math.max(totalTimeTaken, timeTaken)
+        }
+
+        return totalTimeTaken + 1
+    }
+
+    data class Item(val node: Int, var weight: Int)
+
+    fun prepareMap(paths: Array<IntArray>): Map<Int, MutableList<Int>> {
+        val returnValue = mutableMapOf<Int, MutableList<Int>>()
+        for (path in paths) {
+            returnValue[path[0]] = returnValue.getOrDefault(path[0], mutableListOf()).apply{ add(path[1]) }
+            returnValue[path[1]] = returnValue.getOrDefault(path[1], mutableListOf()).apply{ add(path[0]) }
+        }
+        return returnValue
+    }
+}

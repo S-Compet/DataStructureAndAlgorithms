@@ -1,0 +1,50 @@
+// https://leetcode.com/problems/path-with-maximum-probability/description/
+
+class Solution {
+    fun maxProbability(n: Int, edges: Array<IntArray>, succProb: DoubleArray, start_node: Int, end_node: Int): Double {
+        val map = prepareMap(edges, succProb)
+        val isItemsProcessed = BooleanArray(n) { false }
+
+        val pq = PriorityQueue<Item>() { a, b ->
+            if (a.prob < b.prob) {
+                1
+            } else if (a.prob > b.prob) {
+                -1
+            } else {
+                0
+            }
+        }
+        
+        pq.add(Item(start_node, 1.0))
+        while(pq.isNotEmpty()) {
+            val item = pq.poll()
+            isItemsProcessed[item.node] = true
+
+            if (item.node == end_node) return item.prob
+
+            val edges = map.getOrDefault(item.node, mutableListOf<Edge>())
+            for (edge in edges) {
+                if (isItemsProcessed[edge.neighbor] == false) {
+                    pq.add(Item(edge.neighbor, item.prob * edge.edgeProb))
+                }
+            }
+        }
+
+        return 0.0
+    }
+
+    data class Item(val node: Int, var prob: Double)
+
+    data class Edge(val neighbor: Int, val edgeProb: Double)
+
+    fun prepareMap(edges: Array<IntArray>, succProb: DoubleArray): MutableMap<Int, MutableList<Edge>> {
+        val map = mutableMapOf<Int, MutableList<Edge>>()
+        for (index in 0 until edges.size) {
+            val edge = edges[index]
+            val prob = succProb[index]
+            map[edge[0]] = map.getOrDefault(edge[0], mutableListOf<Edge>()).apply { add(Edge(edge[1], prob)) }
+            map[edge[1]] = map.getOrDefault(edge[1], mutableListOf<Edge>()).apply { add(Edge(edge[0], prob)) }
+        }
+        return map
+    }
+}

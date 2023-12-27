@@ -1,0 +1,57 @@
+// https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/description/
+
+class Solution {
+    fun countPaths(n: Int, roads: Array<IntArray>): Int {
+        val mod = 1000000007
+        val map = prepareMap(roads)
+
+        val frequencies = Array<Frequency>(n) { Frequency(Long.MAX_VALUE, 0) }
+
+        val pq = PriorityQueue<Node>() { a, b ->
+            if (a.dist < b.dist) {
+                -1
+            } else if (a.dist > b.dist) {
+                1
+            } else {
+                0
+            }
+        }
+
+        pq.add(Node(0, 0))
+        frequencies[0].dist = 0
+        frequencies[0].freq = 1
+
+        while(pq.isNotEmpty()) {
+            val node = pq.poll()
+
+            val edges = map.getOrDefault(node.value, mutableListOf<Node>())
+            for (edge in edges) {
+                val neighbor = edge.value
+                val newDist = node.dist + edge.dist
+
+                if (newDist < frequencies[neighbor].dist) {
+                    frequencies[neighbor].dist = newDist
+                    frequencies[neighbor].freq = frequencies[node.value].freq
+                    pq.add(Node(neighbor, newDist))
+                } else if (newDist == frequencies[neighbor].dist) {
+                    frequencies[neighbor].freq = (frequencies[neighbor].freq + frequencies[node.value].freq) % mod
+                }
+            }
+        }
+
+        return frequencies[n - 1].freq
+    }
+
+    data class Node(val value: Int, val dist: Long)
+    data class Frequency(var dist: Long, var freq: Int)
+
+    fun prepareMap(edges: Array<IntArray>): MutableMap<Int, MutableList<Node>> {
+        val map = mutableMapOf<Int, MutableList<Node>>()
+        for (index in 0 until edges.size) {
+            val edge = edges[index]
+            map[edge[0]] = map.getOrDefault(edge[0], mutableListOf<Node>()).apply { add(Node(edge[1], edge[2] * 1L)) }
+            map[edge[1]] = map.getOrDefault(edge[1], mutableListOf<Node>()).apply { add(Node(edge[0], edge[2] * 1L)) }
+        }
+        return map
+    }
+}

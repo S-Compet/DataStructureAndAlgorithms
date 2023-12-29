@@ -1,0 +1,64 @@
+// https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/description/
+
+class Solution {
+    fun removeStones(stones: Array<IntArray>): Int {
+        val n = findN(stones)
+        val rowMap = prepareRowMap(stones)
+        val colMap = prepareColMap(stones)
+
+        var count = 0
+        while(rowMap.isNotEmpty()) {
+            count++
+
+            val x = rowMap.entries.first().key
+            val y = rowMap.entries.first().value.first()
+
+            val queue = LinkedList<Pair<Int, Int>>()
+            queue.add(Pair(x, y))
+
+            while(queue.isNotEmpty()) {
+                val (p, q) = queue.pop()
+
+                for (col in rowMap.getOrDefault(p, mutableListOf<Int>())) {
+                    queue.add(Pair(p, col))
+                }
+                rowMap.remove(p)
+
+                for (row in colMap.getOrDefault(q, mutableListOf<Int>())) {
+                    queue.add(Pair(row, q))
+                }
+                colMap.remove(q)
+            }
+        }
+
+        return stones.size - count
+    }
+
+    private fun findN(stones: Array<IntArray>): Int {
+        var n = 0
+        for (stone in stones) {
+            n = Math.max(n, Math.max(stone[0], stone[1]))
+        }
+        return n + 1
+    }
+
+    private fun prepareRowMap(stones: Array<IntArray>): MutableMap<Int, MutableList<Int>> {
+        val map = mutableMapOf<Int, MutableList<Int>>()
+
+        for (stone in stones) {
+            map[stone[0]] = map.getOrDefault(stone[0], mutableListOf<Int>()).apply { add(stone[1]) }
+        }
+
+        return map
+    }
+
+    private fun prepareColMap(stones: Array<IntArray>): MutableMap<Int, MutableList<Int>> {
+        val map = mutableMapOf<Int, MutableList<Int>>()
+
+        for (stone in stones) {
+            map[stone[1]] = map.getOrDefault(stone[1], mutableListOf<Int>()).apply { add(stone[0]) }
+        }
+
+        return map
+    }
+}

@@ -1,0 +1,55 @@
+// https://leetcode.com/problems/cheapest-flights-within-k-stops/description/
+
+class Solution {
+    fun findCheapestPrice(n: Int, flights: Array<IntArray>, src: Int, dst: Int, k1: Int): Int {
+        val k = k1 + 1
+        val map = prepareMap(flights)
+
+        val shortestDistances = Array<IntArray>(k + 1) { IntArray(n) { Int.MAX_VALUE } }
+        for (item in shortestDistances) { item[src] = 0 }
+
+        val pq = PriorityQueue<Node>() { a, b -> a.distance - b.distance }
+        pq.add(Node(src, 0, 0))
+
+        while(pq.isNotEmpty()) {
+            val node = pq.poll()
+
+            val edges = map.getOrDefault(node.value, mutableListOf<Edge>())
+            for (edge in edges) {
+                val neighbor = edge.neighbor
+                val newDist = node.distance + edge.distance
+                if (node.k + 1 <= k && newDist < shortestDistances[node.k + 1][neighbor]) {
+                    shortestDistances[node.k + 1][edge.neighbor] = newDist
+                    pq.add(Node(edge.neighbor, newDist, node.k + 1))
+                }
+            }
+        }
+// shortestDistances.print()
+        var output = Int.MAX_VALUE
+        for (item in shortestDistances) {
+            if (output > item[dst]) output = item[dst]
+        }
+        return if (output == Int.MAX_VALUE) -1 else output
+    }
+
+    data class Node(val value: Int, var distance: Int, var k: Int)
+    data class Edge(val neighbor: Int, var distance: Int)
+    
+    fun prepareMap(flights: Array<IntArray>): MutableMap<Int, MutableList<Edge>> {
+        val map = mutableMapOf<Int, MutableList<Edge>>()
+        for (edge in flights) {
+            map[edge[0]] = map.getOrDefault(edge[0], mutableListOf<Edge>()).apply { add(Edge(edge[1], edge[2])) }
+        }
+        return map
+    }
+
+    fun Array<IntArray>.print() {
+        for (item in this) {
+            for (index in 0 until item.size) {
+                print("($index,${item[index]}) ")
+            }
+            println()
+        }
+        println()
+    }
+}

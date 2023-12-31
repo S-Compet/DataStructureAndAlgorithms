@@ -1,0 +1,91 @@
+// https://leetcode.com/problems/satisfiability-of-equality-equations/description/
+
+class Solution {
+    fun equationsPossible(equations: Array<String>): Boolean {
+        val groups = mutableSetOf<MutableSet<Char>>()
+
+        val equalEquationList = equations.filter { it[1] == '=' }
+        val notEqualEquationList = equations.filter { it[1] == '!' }
+
+        for (eq in equalEquationList) {
+            val x = eq[0]
+            val y = eq[3]
+
+            val xGroup = findGroup(groups, x)
+            val yGroup = findGroup(groups, y)
+
+            if (xGroup == null && yGroup == null) {
+                groups.add(mutableSetOf(x, y))
+            } else if (xGroup != null && yGroup == null) {
+                xGroup!!.add(y)
+            } else if (xGroup == null && yGroup != null) {
+                yGroup!!.add(x)
+            } else {
+                if (xGroup != yGroup) {
+                    xGroup!!.addAll(yGroup!!)
+                    groups.remove(yGroup)
+                }
+            }
+        }
+
+        for (eq in notEqualEquationList) {
+            val x = eq[0]
+            val y = eq[3]
+
+            if (x == y) return false
+            
+            for (group in groups) {
+                if (group.contains(x) && group.contains(y)) return false
+            }
+        }
+        return true
+    }
+
+    fun findGroup(groups: MutableSet<MutableSet<Char>>, value: Char): MutableSet<Char>? {
+        var returnValue: MutableSet<Char>? = null
+
+        for (group in groups) {
+            if (group.contains(value)) {
+                returnValue = group
+                break
+            }
+        }
+
+        return returnValue
+    }
+}
+
+
+/**
+a == b
+b == c
+c != d
+b == d
+
+    groups = setOf<set<int>>()
+
+    equalEquationList
+    notEqualEquationList
+
+    for (eq in quealEquationList) {
+        val x = eq[0]
+        val y = eq[3]
+
+        val xGroup = findGroup(x)
+        val yGroup = findGroup(y)
+
+        if (xGroup == null && yGroup == null) {
+            groups.add(setOf(xGroup, yGroup))
+        } else if (xGroup != null && yGroup == null) {
+            xGroup.add(y)
+        } else if (xGroup == null && yGroup != null) {
+            yGroup.add(x)
+        } else {
+            if (xGroup != yGroup) {
+                xGroup.addAll(yGroup)
+                groups.remove(yGroup)
+            }
+        }
+    }
+
+ */

@@ -1,0 +1,21 @@
+// https://leetcode.com/problems/find-the-town-judge/description/
+
+class Solution {
+    fun findJudge(n: Int, trust: Array<IntArray>): Int {
+        val arr = IntArray(n + 1) { 0 }
+        for (rel in trust) {
+            val a = rel[0]
+            val b = rel[1]
+
+            arr[a] = -1
+
+            if (arr[b] != -1) {
+                arr[b]++
+            }
+        }
+        for (i in 1 .. n) {
+            if (arr[i] == n - 1) return i
+        }
+        return -1
+    }
+}

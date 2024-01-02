@@ -1,0 +1,62 @@
+// https://leetcode.com/problems/reverse-words-in-a-string/description/
+
+class Solution {
+    fun reverseWords(s: String): String {
+        val arr = s.toArray()
+        val n = arr.size
+
+        reverse(arr, 0, n - 1)
+
+        var i = 0
+        var j = 0
+        while (i < n && j < n) {
+            while (i < j || (i < n && arr[i] == ' ')) i++
+            while (j < i || (j < n && arr[j] != ' ')) j++
+            reverse(arr, i, j - 1)
+        }
+        return arr.joinToString("")
+    }
+
+    fun reverse(arr: CharArray, p: Int, q: Int) {
+        var i = p
+        var j = q
+        while (i < j) {
+            val temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+            i++
+            j--
+        }
+    }
+
+    fun String.toArray(): CharArray {
+        var i = 0
+        while(i < this.length) {
+            if (this[i] != ' ') break
+            i++
+        }
+
+        var j = this.length - 1
+        while (j >= 0) {
+            if (this[j] != ' ') break
+            j--
+        }
+
+        val arr = mutableListOf<Char>()
+        var isSpaceIgnore = false
+        
+        while (i <= j) {
+            val ch = this[i++]
+
+            if (ch != ' ') isSpaceIgnore = false
+
+            if (isSpaceIgnore) continue
+
+            arr.add(ch)
+
+            if (ch == ' ') isSpaceIgnore = true
+        }
+
+        return arr.toCharArray()
+    }
+}

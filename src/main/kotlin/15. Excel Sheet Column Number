@@ -1,0 +1,16 @@
+// https://leetcode.com/problems/excel-sheet-column-number/description/
+
+class Solution {
+    fun titleToNumber(columnTitle: String): Int {
+        val n = columnTitle.length
+        
+        var sum = 0
+        var mul = 1
+        for (index in n - 1 downTo 0) {
+            sum += (columnTitle[index] - 'A' + 1) * mul
+            mul *= 26
+        }
+
+        return sum
+    }
+}

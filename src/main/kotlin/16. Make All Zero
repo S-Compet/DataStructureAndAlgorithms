@@ -1,0 +1,37 @@
+// https://www.codechef.com/problems/MAKE0?tab=statement
+
+fun main() {
+    var t = readln().toInt()
+    while (t-- > 0) {
+        val n = readln().toInt()
+        val list = readln().split(" ").map { it.toInt() }
+        
+        val linkedMap = linkedMapOf<Int, Int>()
+        var lastMin = -1
+        for (item in list) {
+            if (linkedMap.isEmpty()) {
+                linkedMap[item] = 1
+                lastMin = item
+            } else {
+                // val lastMin = linkedMap.entries.last().key
+                if (item == lastMin) {
+                    linkedMap[item] = linkedMap.get(item)!! + 1
+                } else if (item < lastMin) {
+                    linkedMap[item] = 1
+                    lastMin = item
+                }
+            }
+        }
+        
+        var minOperation = n
+        
+        var alreadyZeroCount = 0
+        val reverseEntries = linkedMap.entries.reversed()
+        for ((ele, freq) in reverseEntries) {
+            minOperation = Math.min(minOperation, ele + n - freq - alreadyZeroCount)
+            alreadyZeroCount += freq
+        }
+        
+        println(minOperation)
+    }
+}

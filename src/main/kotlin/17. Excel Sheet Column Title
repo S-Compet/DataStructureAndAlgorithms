@@ -1,0 +1,46 @@
+// https://leetcode.com/problems/excel-sheet-column-title/
+
+class Solution {
+    fun convertToTitle(columnNumber: Int): String {
+        var output = StringBuilder()
+
+        var n = columnNumber
+        while (n != 0) {
+            val mod = if (n % 26 == 0) 26 else n % 26
+            val div = if (n % 26 == 0) n / 26 - 1 else n / 26
+
+            output.append((64 + mod).toChar())
+            n = div
+        }
+
+        return output.reverse().toString()
+    }
+}
+
+/*
+
+26 + 26 * 26 + 26 * 26 * 26 = 18278
+
+701 / 26 = 26.96
+701 % 26 = 25
+
+701 - 25
+
+702 / 26 = 27
+702 % 26 = 0
+
+a * 26^0 + b * 26 ^ 1 + c * 26 ^ 2 = 702
+
+
+9999 / 26 = 384
+9999 % 26 = 15
+
+384 / 26 = 14
+384 % 26 = 20
+
+
+NTO
+
+20 * 26^1 + 15 * 26^0
+
+ */

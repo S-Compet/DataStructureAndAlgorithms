@@ -1,0 +1,26 @@
+// https://leetcode.com/problems/isomorphic-strings/description/
+
+class Solution {
+    fun isIsomorphic(s: String, t: String): Boolean {
+        val map1 = mutableMapOf<Char, Char>()
+        val map2 = mutableMapOf<Char, Char>()
+
+        for (index in 0 until s.length) {
+            val c1 = s[index]
+            val c2 = t[index]
+
+            if (map1.contains(c1) == false && map2.contains(c2) == false) {
+                map1[c1] = c2
+                map2[c2] = c1
+            } else if (map1.contains(c1) && map2.contains(c2)) {
+                if (map1[c1]!! != c2 || map2[c2]!! != c1) {
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+
+        return true
+    }
+}

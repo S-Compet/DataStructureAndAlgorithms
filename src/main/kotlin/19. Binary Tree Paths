@@ -1,0 +1,48 @@
+// https://leetcode.com/problems/binary-tree-paths/description/
+
+/**
+ * Example:
+ * var ti = TreeNode(5)
+ * var v = ti.`val`
+ * Definition for a binary tree node.
+ * class TreeNode(var `val`: Int) {
+ *     var left: TreeNode? = null
+ *     var right: TreeNode? = null
+ * }
+ */
+class Solution {
+    fun binaryTreePaths(root: TreeNode?): List<String> {
+        val solutions = mutableSetOf<String>()
+        recursion(root, mutableListOf<Int>(), solutions)
+
+        return solutions.toList()
+    }
+
+    fun recursion(root: TreeNode?, path: List<Int>, solutions: MutableSet<String>) {
+        if (root == null) return
+
+        if (root?.left == null && root?.right == null) {
+            solutions.add((path + root.`val`).str())
+            return
+        }
+
+        recursion(root?.left, path + root.`val`, solutions)
+        recursion(root?.right, path + root.`val`, solutions)
+    }
+
+    operator fun List<Int>.plus(value: Int): List<Int> {
+        return this.toMutableList().apply { add(value) }
+    }
+
+    fun List<Int>.str(): String {
+        val builder = StringBuilder()
+        builder.append(this[0])
+
+        for (index in 1 until this.size) {
+            builder.append("->")
+            builder.append(this[index])
+        }
+
+        return builder.toString()
+    }
+}

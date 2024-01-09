@@ -1,0 +1,77 @@
+// https://leetcode.com/problems/restore-ip-addresses/description/
+
+class Solution {
+    fun restoreIpAddresses(s: String): List<String> {
+        val solutions = mutableListOf<String>()
+        recursion(s, 0, MutableList<String>(4) { "" } , solutions)
+
+        return solutions
+    }
+
+    fun recursion(remainingString: String, step: Int, path: MutableList<String>, solutions: MutableList<String>) {
+        if (step == 4) {
+            if (remainingString.isEmpty()) {
+                solutions.add(path.joinToString("."))
+            }
+            return
+        } 
+
+        for (index in 0 until remainingString.length) {
+            val number = remainingString.substring(0, index + 1)
+            val remainingStr = remainingString.substring(index + 1)
+            
+            if (number.isValid() == false) break
+            
+            path[step] = number
+
+            if (step < 4) {
+                recursion(remainingStr, step + 1, path, solutions)
+            }
+        }
+    }
+
+    fun String.isValid(): Boolean {
+        if (this.length > 1 && this[0] == '0') return false
+        if (this.toInt() >= 0 && this.toInt() <= 255) return true
+        return false
+    }
+}
+
+
+
+/*
+163223
+
+recursion(remainingString: String, step: Int, path: List<String>, solutions: List<String>) {
+    if (step == 4) {
+        if (string.empty) 
+            solutions
+    
+        return
+    } 
+
+    for (index in 0 until remainginString.length) {
+        val number = remaingingString.substring(0, index + 1)
+        val remainingString = remaingingString.substring(index + 1)
+        
+        if (number is invalid) break
+        
+        path[step] = number
+
+        if (step < 4) {
+            recursion(remainingString, step + 1, path, solutions)
+        }
+    }
+}
+
+fun String.isValid(): Boolean {
+    if (this.length > 1 && this[0] == '0') return false
+    if (this.toInt() >= 0 && this.toInt() <= 255) return true
+    return false
+}
+_      _      _      _
+
+            1
+
+
+ */

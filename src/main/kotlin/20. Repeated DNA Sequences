@@ -1,0 +1,32 @@
+// https://leetcode.com/problems/repeated-dna-sequences/description/
+
+class Solution {
+    fun findRepeatedDnaSequences(s: String): List<String> {
+        if (s.length < 10) return listOf<String>()
+
+        var builder = StringBuilder(s.substring(0, 10))
+        
+        val map = mutableMapOf<String, Int>()
+        map[builder.toString()] = 1
+
+        for (index in 10 until s.length) {
+            builder = StringBuilder(builder.removeRange(0, 1))
+            builder.append(s[index])
+
+            map[builder.toString()] = map.getOrDefault(builder.toString(), 0) + 1
+        }
+
+        val returnValue = mutableListOf<String>()
+        for ((key, value) in map) {
+            if (value > 1) {
+                returnValue.add(key)
+            }
+        }
+
+        return returnValue
+    }
+}
+/*
+ AAAAAAAAAAAAA
+ AAAAAAAAAA
+ */

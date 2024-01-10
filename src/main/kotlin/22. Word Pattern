@@ -1,0 +1,28 @@
+// https://leetcode.com/problems/word-pattern/description/
+
+class Solution {
+    fun wordPattern(pattern: String, s: String): Boolean {
+        val s1 = pattern.map { it.toString() }
+        val s2 = s.split(" ")
+
+        if (s1.size != s2.size) return false
+
+        val mapA = mutableMapOf<String, String>()
+        val mapB = mutableMapOf<String, String>()
+        for (index in 0 until s1.size) {
+            val a = s1[index]
+            val b = s2[index]
+
+            if (mapA.contains(a).not() && mapB.contains(b).not()) {
+                mapA[a] = b
+                mapB[b] = a
+            } else if (mapA.contains(a) && mapB.contains(b)) {
+                if (mapA[a]!! != b || mapB[b]!! != a) return false
+            } else {
+                return false
+            }
+        }
+        
+        return true
+    }
+}

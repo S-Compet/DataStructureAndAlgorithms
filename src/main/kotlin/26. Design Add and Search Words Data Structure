@@ -1,0 +1,67 @@
+// https://leetcode.com/problems/design-add-and-search-words-data-structure/
+
+class WordDictionary() {
+    val dist = mutableMapOf<Char, Item>()
+
+    fun addWord(word: String) {
+        addWord(word, dist)
+    }
+
+    fun search(word: String): Boolean {
+        // println("$word $dist")
+        return search(word, dist)
+    }
+
+
+    private fun addWord(word: String, dist: MutableMap<Char, Item>) {
+        if (word.isEmpty()) return
+
+        val ch = word[0]
+
+        if (dist.contains(ch) == false) {
+            dist[ch] = Item()
+        }
+
+        if (word.length == 1) {
+            dist[ch]!!.isEnd = true
+        } else {
+            addWord(word.substring(1), dist[ch]!!.dist)
+        }
+    }
+
+    private fun search(word: String, dist: MutableMap<Char, Item>): Boolean {
+        if (word.isEmpty()) return true
+        
+        if (word.length == 1) {
+            val ch = word[0]
+            if (ch == '.') {
+                for ((_, item) in dist) {
+                    if (item.isEnd) return true
+                }
+                return false
+            } else {
+                return dist.contains(ch) && dist[ch]!!.isEnd == true
+            }
+        } else {
+            val ch = word[0]
+            if (ch == '.') {
+                for ((_, item) in dist) {
+                    val output = search(word.substring(1), item.dist)
+                    if (output == true) return true
+                }
+                return false
+            } else {
+                return dist.contains(ch) && search(word.substring(1), dist[ch]!!.dist)
+            }
+        }
+    }
+}
+
+data class Item(var isEnd: Boolean = false, val dist: MutableMap<Char, Item> = mutableMapOf())
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * var obj = WordDictionary()
+ * obj.addWord(word)
+ * var param_2 = obj.search(word)
+ */

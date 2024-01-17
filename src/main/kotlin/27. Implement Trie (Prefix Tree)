@@ -1,0 +1,60 @@
+// https://leetcode.com/problems/implement-trie-prefix-tree/description/
+
+class Trie() {
+    val dict = mutableMapOf<Char, Node>()
+
+    fun insert(word: String) {
+        insert(word, dict)
+    }
+
+    fun search(word: String): Boolean {
+        return search(word, dict)
+    }
+
+    fun startsWith(prefix: String): Boolean {
+        return startsWith(prefix, dict)
+    }
+
+    private fun insert(word: String, dict: MutableMap<Char, Node>) {
+        if (word.isEmpty()) return
+
+        val ch = word[0]
+        if (dict.contains(ch) == false) {
+            dict[ch] = Node()
+        }
+
+        if (word.length == 1) {
+            dict[ch]!!.isEnd = true
+        } else {
+            insert(word.substring(1), dict[ch]!!.dict)
+        }
+    }
+
+    private fun search(word: String, dict: MutableMap<Char, Node>): Boolean {
+        if (word.isEmpty()) return false
+
+        val ch = word[0]
+        if (word.length == 1) {
+            return dict.contains(ch) && dict[ch]!!.isEnd
+        } else {
+            return dict.contains(ch) && search(word.substring(1), dict[ch]!!.dict)
+        }
+    }
+
+    private fun startsWith(prefix: String, dict: MutableMap<Char, Node>): Boolean {
+        if (prefix.isEmpty()) return true
+
+        val ch = prefix[0]
+        return dict.contains(ch) && startsWith(prefix.substring(1), dict[ch]!!.dict)
+    }
+
+    data class Node(var isEnd: Boolean = false, val dict: MutableMap<Char, Node> = mutableMapOf())
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * var obj = Trie()
+ * obj.insert(word)
+ * var param_2 = obj.search(word)
+ * var param_3 = obj.startsWith(prefix)
+ */

@@ -1,0 +1,12 @@
+// https://leetcode.com/problems/maximum-number-of-words-found-in-sentences/
+
+class Solution {
+    fun mostWordsFound(sentences: Array<String>): Int {
+        var maxSize = 0
+        for (sentence in sentences) {
+            val size = sentence.split(" ").size
+            maxSize = Math.max(maxSize, size)
+        }
+        return maxSize
+    }
+}

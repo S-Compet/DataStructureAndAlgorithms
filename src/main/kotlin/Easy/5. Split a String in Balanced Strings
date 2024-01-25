@@ -1,0 +1,19 @@
+// https://leetcode.com/problems/split-a-string-in-balanced-strings/description/
+
+class Solution {
+    fun balancedStringSplit(s: String): Int {
+        var count = 0
+
+        var l = 0
+        var r = 0
+        for (i in 0 until s.length) {
+            if (s[i] == 'L') l++
+            if (s[i] == 'R') r++
+            if (l == r) {
+                // println(s.substring(0, i+1))
+                count++
+            }
+        }
+        return count
+    }
+}

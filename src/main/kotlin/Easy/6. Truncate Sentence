@@ -1,0 +1,16 @@
+// https://leetcode.com/problems/truncate-sentence/
+
+class Solution {
+    fun truncateSentence(s: String, k: Int): String {
+        var count = 0
+        val builder = StringBuilder()
+        for (ch in s) {
+            if (ch == ' ') count++
+            if (count == k) break
+
+            builder.append(ch)
+        }
+
+        return builder.toString()
+    }
+}

@@ -1,0 +1,19 @@
+// https://leetcode.com/problems/cells-in-a-range-on-an-excel-sheet/submissions/1160682572/
+
+class Solution {
+    fun cellsInRange(s: String): List<String> {
+        val c1 = s[0]
+        val r1 = s[1] - '0'
+
+        val c2 = s[3]
+        val r2 = s[4] - '0'
+
+        val output = mutableListOf<String>()
+        for (c in c1 .. c2) {
+            for (r in r1 .. r2) {
+                output.add("$c$r")
+            }
+        }
+        return output
+    }
+}

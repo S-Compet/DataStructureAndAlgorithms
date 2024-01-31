@@ -1,0 +1,26 @@
+// https://leetcode.com/problems/decode-the-message/
+
+class Solution {
+    fun decodeMessage(key: String, message: String): String {
+        val map = mutableMapOf<Char, Char>()
+
+        var count = 'a'
+        for (ch in key) {
+            if (ch != ' ' && map.containsKey(ch) == false) {
+                map[ch] = count.toChar()
+                count++
+            }
+        }
+
+        val builder = StringBuilder()
+        for (ch in message) {
+            if (ch == ' ') {
+                builder.append(ch)
+            } else {
+                builder.append(map[ch]!!)
+            }
+        }
+
+        return builder.toString()
+    }
+}

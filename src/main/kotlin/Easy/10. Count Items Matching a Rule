@@ -1,0 +1,17 @@
+// https://leetcode.com/problems/count-items-matching-a-rule/description/
+
+class Solution {
+    fun countMatches(items: List<List<String>>, ruleKey: String, ruleValue: String): Int {
+        var count = 0
+        for(item in items) {
+            if (ruleKey == "type" && ruleValue == item[0]) {
+                count++
+            } else if (ruleKey == "color" && ruleValue == item[1]) {
+                count++
+            } else if (ruleKey == "name" && ruleValue == item[2]) {
+                count++
+            }
+        }
+        return count
+    }
+}
